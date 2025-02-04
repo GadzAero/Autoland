@@ -19,15 +19,32 @@ def traitement(image):
 
     #On définit un triangle de zone d'interetqui prend le quart bas de l'image
     region_interet_coordonnees= [(0,img_height), (img_width/2,img_height/2), (img_width,img_height)]
-
-
-        
+    """
+    #Dégageons le blanc et le gris  avec deux masques fusionnés
+    image_hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
+    lower_white = np.array([0, 0, 180], dtype=np.uint8)   # Blanc (lumière élevée)
+    upper_white = np.array([0, 0, 180], dtype=np.uint8)
+    lower_gray = np.array([160, 160 , 160], dtype=np.uint8)      # Gris (tons moyens)
+    upper_gray = np.array([35, 32, 35], dtype=np.uint8)
+    
+    mask_white = cv2.inRange(image_hsv, lower_white, upper_white)
+    mask_gray = cv2.inRange(image_hsv, lower_gray, upper_gray)
+    mask_combined = cv2.bitwise_or(mask_white, mask_gray)
+    """
+    #Afficher masque
+    #cv2.imshow("Masque", mask_gray)
+    
     #Passage en niveau de gris
     image_gris= cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
     #image_gris = cv2.GaussianBlur(image_gris, (5, 5), 0)  # Applique un flou gaussien
 
     #Application de la fonction de detection de contours canny
-    canny_image= cv2.Canny(image_gris, 100, 200)    
+    canny_image= cv2.Canny( image_gris, 100, 200)
+    #Afficher masque
+    cv2.namedWindow("Canny", cv2.WINDOW_NORMAL)  # Permet de redimensionner la fenêtre
+    cv2.resizeWindow("Canny", 600, 400)
+    cv2.imshow("Canny", canny_image)
+      # Ajuste la taille de la fenêtre (largeur x hauteur)
     """
     #On applique une morphologie pour réduire les petits artéfacts
     kernel = np.ones((3,3), np.uint8)  # Définir un noyau de 3x3 pixels
@@ -78,7 +95,7 @@ def dessin_lignes(img, lines):
 
 
 
-video=cv2.VideoCapture(r"C:\Users\pradi\OneDrive - ensam.eu\Projet Dassault\3-DEVELOPPEMENT\3- Reconnaissance image\Aproches.mp4")
+video=cv2.VideoCapture(r"C:\Users\pradi\OneDrive - ensam.eu\Projet Dassault\3-DEVELOPPEMENT\3- Reconnaissance image\Cut1.mp4")
 cv2.namedWindow("Runway recognition DUAV", cv2.WINDOW_NORMAL)  # Permet de redimensionner la fenêtre
 cv2.resizeWindow("Runway recognition DUAV", 1080, 700)  # Ajuste la taille de la fenêtre (largeur x hauteur)
 
